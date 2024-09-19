@@ -256,6 +256,10 @@ class _StatusScreenState extends State<StatusScreen> {
                                           ),
                                           Switch(
                                               value: state.headLights,
+                                              activeColor:
+                                                  MyHexColor.fromHex("CCC9DC"),
+                                              inactiveThumbColor:
+                                                  MyHexColor.fromHex("0C1821"),
                                               onChanged: (value) {
                                                 context.read<StatusBloc>().add(
                                                     StatusUpdateFirebaseEvent(
@@ -516,6 +520,9 @@ class _StatusScreenState extends State<StatusScreen> {
                                                 ]),
                                           ),
                                           Slider(
+                                            activeColor: state.fanSpeed == 0
+                                                ? MyHexColor.fromHex("0C1821")
+                                                : MyHexColor.fromHex("CCC9DC"),
                                             min: 0,
                                             max: 3,
                                             divisions: 3,

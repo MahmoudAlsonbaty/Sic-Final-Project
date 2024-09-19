@@ -130,8 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           colors: const [
                             /// If you don't want use Gradient, set just one color
                             // MyHexColor.fromHex("0C1821"),
-                            Color.fromARGB(60, 97, 97, 97),
-                            Color.fromARGB(20, 41, 41, 41),
+                            Color.fromARGB(57, 71, 74, 253),
+                            Color.fromARGB(19, 78, 55, 207),
                           ],
                           child: Center(
                             child: BlocConsumer<OverviewBloc, OverviewState>(
