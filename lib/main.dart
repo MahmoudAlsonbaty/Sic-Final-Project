@@ -1,13 +1,31 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sic_project/bloc/overview_bloc.dart';
+import 'package:sic_project/bloc/status_bloc.dart';
+import 'package:sic_project/bloc/update_bloc.dart';
 // import 'package:lottie/lottie.dart';
 import 'package:sic_project/extras.dart';
+import 'package:sic_project/firebase_options.dart';
+import 'package:sic_project/status.dart';
 import 'package:wave_blob/wave_blob.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (context) => OverviewBloc()),
+      BlocProvider(create: (context) => StatusBloc()),
+      BlocProvider(create: (context) => UpdateBloc()),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -15,22 +33,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Sic Final Project',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.deepPurple, brightness: Brightness.dark),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(title: 'Flutter Demo Home Page'),
+      routes: {
+        '/': (context) => HomeScreen(),
+        '/status': (context) => StatusScreen(),
+      },
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.title});
-
-  final String title;
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -38,15 +57,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  int battery = 0;
+
   @override
   void initState() {
+    battery =
+        (context.read<OverviewBloc>().state as OverviewBatteryStatus).battery;
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Timer.periodic(const Duration(milliseconds: 50), (timer) {
-        setState(() {});
-      });
-    });
   }
 
   @override
@@ -98,38 +115,53 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 200,
                     width: 200,
                     //DON'T MAKE IT A CONST
-                    child: WaveBlob(
-                      blobCount: 4,
-                      amplitude: 8500,
-                      scale: 10,
-                      speed: 10,
-                      centerCircle: false,
-                      overCircle: false,
-                      colors: const [
-                        /// If you don't want use Gradient, set just one color
-                        // MyHexColor.fromHex("0C1821"),
-                        Color.fromARGB(60, 97, 97, 97),
-                        Color.fromARGB(20, 41, 41, 41),
-                      ],
-                      child: Center(
-                        child: Text(
-                          '52%',
-                          style: GoogleFonts.ibmPlexSans(
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
-                              color: MyHexColor.fromHex("b5b1b1"),
-                              shadows: [
-                                const Shadow(
-                                  color: Colors
-                                      .black, // Choose the color of the shadow
-                                  blurRadius:
-                                      20.0, // Adjust the blur radius for the shadow effect
-                                  offset: Offset(0.0,
-                                      5.0), // Set the horizontal and vertical offset for the shadow
-                                ),
-                              ]),
-                        ),
-                      ),
+                    child: BlocConsumer<UpdateBloc, UpdateState>(
+                      listener: (context, state) {
+                        // TODO: implement listener
+                      },
+                      builder: (context, state) {
+                        return WaveBlob(
+                          blobCount: 4,
+                          amplitude: 8500,
+                          scale: 10,
+                          speed: 10,
+                          centerCircle: false,
+                          overCircle: false,
+                          colors: const [
+                            /// If you don't want use Gradient, set just one color
+                            // MyHexColor.fromHex("0C1821"),
+                            Color.fromARGB(60, 97, 97, 97),
+                            Color.fromARGB(20, 41, 41, 41),
+                          ],
+                          child: Center(
+                            child: BlocConsumer<OverviewBloc, OverviewState>(
+                              listener: (context, state) {
+                                battery =
+                                    (state as OverviewBatteryStatus).battery;
+                              },
+                              builder: (context, state) {
+                                return Text(
+                                  "${battery}%",
+                                  style: GoogleFonts.ibmPlexSans(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold,
+                                      color: MyHexColor.fromHex("b5b1b1"),
+                                      shadows: [
+                                        const Shadow(
+                                          color: Colors
+                                              .black, // Choose the color of the shadow
+                                          blurRadius:
+                                              20.0, // Adjust the blur radius for the shadow effect
+                                          offset: Offset(0.0,
+                                              5.0), // Set the horizontal and vertical offset for the shadow
+                                        ),
+                                      ]),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   SizedBox(
@@ -153,6 +185,13 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: (int index) => {
               setState(() {
                 _selectedIndex = index;
+                if (index == 1) {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/status', (route) => false);
+                } else {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/', (route) => false);
+                }
               })
             },
             items: const <BottomNavigationBarItem>[
@@ -169,16 +208,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ]),
     );
-  }
-}
-
-class MyClip extends CustomClipper<Rect> {
-  Rect getClip(Size size) {
-    return Rect.fromLTWH(0, 0, 100, 100);
-  }
-
-  bool shouldReclip(oldClipper) {
-    return false;
   }
 }
 

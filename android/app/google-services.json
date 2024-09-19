@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "790861426388",
+    "firebase_url": "https://sic-final-project-14151-default-rtdb.firebaseio.com",
+    "project_id": "sic-final-project-14151",
+    "storage_bucket": "sic-final-project-14151.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790861426388:android:53231492928c7a1d431541",
+        "android_client_info": {
+          "package_name": "com.example.sic_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGwHFoKYtOBqM1aOmbS1pxzPXpiwJkUVI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "366066006127",
+    "project_id": "sic-final-project",
+    "storage_bucket": "sic-final-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366066006127:android:c501e2a714291bc4eaf59a",
+        "android_client_info": {
+          "package_name": "com.example.sic_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4mRkODlOpePZ42Y_ilDuvdWroQqidg0w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
