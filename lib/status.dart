@@ -41,8 +41,8 @@ class _StatusScreenState extends State<StatusScreen> {
                   print("Wind Speed: ${state.windSpeed}");
                   print("Head Lights: ${state.headLights}");
                   print("Temperature: ${state.temperature}");
-                  print("Battery Temperature: ${state.batteryTemperature}");
-                  print("Fan Speed: ${state.fanSpeed}");
+                  print("Battery Temperature: ${state.mq}");
+                  print("Fan Speed: ${state.rainData}");
                   print("Air Quality: ${state.airQuality}");
                   print("Humidity: ${state.Humidity}");
                   print("UV: ${state.uv}");
@@ -181,7 +181,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                           Expanded(
                                             child: Center(
                                               child: Text(
-                                                state.windSpeed.toString(),
+                                                "${state.windSpeed.toString()} km/h",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.ibmPlexSans(
                                                   fontSize: 16,
@@ -356,7 +356,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                           Expanded(
                                             child: Center(
                                               child: Text(
-                                                state.temperature.toString(),
+                                                "${state.temperature.toString()} °C",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.ibmPlexSans(
                                                   fontSize: 16,
@@ -397,7 +397,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                   Flexible(
                                     flex: 1,
                                     child: Icon(
-                                      Icons.device_thermostat,
+                                      Icons.gas_meter,
                                       size: 40,
                                       color: MyHexColor.fromHex("E8EAED"),
                                     ),
@@ -412,7 +412,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                             height: 5,
                                           ),
                                           Text(
-                                            'Battery Temp',
+                                            'Gas Sensor',
                                             style: GoogleFonts.ibmPlexSans(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
@@ -432,8 +432,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                           Expanded(
                                             child: Center(
                                               child: Text(
-                                                state.batteryTemperature
-                                                    .toString(),
+                                                getSmokeStatus(state.mq),
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.ibmPlexSans(
                                                   fontSize: 16,
@@ -457,7 +456,7 @@ class _StatusScreenState extends State<StatusScreen> {
                           ],
                         ),
                         SizedBox(height: _disBetweenBoxes),
-                        //! THIRD ROW === FAN SPEED AND AIR QUALITY
+                        //! THIRD ROW === RAIN AND AIR QUALITY
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -487,7 +486,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                   Flexible(
                                     flex: 1,
                                     child: Icon(
-                                      Icons.mode_fan_off,
+                                      Icons.cloud,
                                       size: 40,
                                       color: MyHexColor.fromHex("E8EAED"),
                                     ),
@@ -502,7 +501,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                             height: 5,
                                           ),
                                           Text(
-                                            'Fan Speed',
+                                            'Rain',
                                             style: GoogleFonts.ibmPlexSans(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
@@ -519,22 +518,19 @@ class _StatusScreenState extends State<StatusScreen> {
                                                   ),
                                                 ]),
                                           ),
-                                          Slider(
-                                            activeColor: state.fanSpeed == 0
-                                                ? MyHexColor.fromHex("0C1821")
-                                                : MyHexColor.fromHex("CCC9DC"),
-                                            min: 0,
-                                            max: 3,
-                                            divisions: 3,
-                                            value: state.fanSpeed,
-                                            onChanged: (double newValue) {
-                                              context.read<StatusBloc>().add(
-                                                  StatusUpdateFirebaseEvent(
-                                                      fanSpeed: newValue));
-                                              context.read<StatusBloc>().add(
-                                                  StatusDataChanged(
-                                                      fanSpeed: newValue));
-                                            },
+                                          Expanded(
+                                            child: Center(
+                                              child: Text(
+                                                getRainStatus(state.rainData),
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.ibmPlexSans(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: MyHexColor.fromHex(
+                                                      "D9D9D9"),
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -601,7 +597,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                           Expanded(
                                             child: Center(
                                               child: Text(
-                                                state.airQuality.toString(),
+                                                "${state.airQuality.toString()} mg/m3",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.ibmPlexSans(
                                                   fontSize: 16,
@@ -689,7 +685,7 @@ class _StatusScreenState extends State<StatusScreen> {
                                           Expanded(
                                             child: Center(
                                               child: Text(
-                                                state.Humidity.toString(),
+                                                "${state.Humidity.toString()} %",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.ibmPlexSans(
                                                   fontSize: 16,
@@ -832,5 +828,21 @@ class _StatusScreenState extends State<StatusScreen> {
         ),
       ]),
     );
+  }
+}
+
+String getRainStatus(double rain) {
+  if (rain >= 300) {
+    return "Raining";
+  } else {
+    return "No Rain";
+  }
+}
+
+String getSmokeStatus(int smoke) {
+  if (smoke >= 150) {
+    return "Smoke";
+  } else {
+    return "No Smoke";
   }
 }

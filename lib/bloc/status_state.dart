@@ -6,21 +6,21 @@ sealed class StatusState {}
 final class StatusInitial extends StatusState {}
 
 final class StatusUpdate extends StatusState {
-  final int windSpeed;
+  final double windSpeed;
   final bool headLights;
   final int temperature;
-  final int batteryTemperature;
-  final double fanSpeed;
-  final int airQuality;
+  final int mq;
+  final double rainData;
+  final double airQuality;
   final int Humidity;
-  final int uv;
+  final double uv;
 
   StatusUpdate(
       {required this.windSpeed,
       required this.headLights,
       required this.temperature,
-      required this.batteryTemperature,
-      required this.fanSpeed,
+      required this.mq,
+      required this.rainData,
       required this.airQuality,
       required this.Humidity,
       required this.uv});

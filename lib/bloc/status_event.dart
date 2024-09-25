@@ -4,21 +4,21 @@ part of 'status_bloc.dart';
 sealed class StatusEvent {}
 
 final class StatusDataChanged extends StatusEvent {
-  final int? windSpeed;
+  final double? windSpeed;
   final bool? headLights;
   final int? temperature;
-  final int? batteryTemperature;
-  final double? fanSpeed;
-  final int? airQuality;
+  final int? mq;
+  final double? rainData;
+  final double? airQuality;
   final int? Humidity;
-  final int? uv;
+  final double? uv;
 
   StatusDataChanged(
       {this.windSpeed,
       this.headLights,
       this.temperature,
-      this.batteryTemperature,
-      this.fanSpeed,
+      this.mq,
+      this.rainData,
       this.airQuality,
       this.Humidity,
       this.uv});

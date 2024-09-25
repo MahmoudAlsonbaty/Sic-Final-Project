@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shake/shake.dart';
 import 'package:sic_project/bloc/overview_bloc.dart';
 import 'package:sic_project/bloc/status_bloc.dart';
 import 'package:sic_project/bloc/update_bloc.dart';
@@ -63,6 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     battery =
         (context.read<OverviewBloc>().state as OverviewBatteryStatus).battery;
+    ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
+      print("phone shook"); // Do stuff on phone shake
+    });
     super.initState();
   }
 
